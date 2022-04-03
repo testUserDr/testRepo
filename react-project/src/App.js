@@ -1,100 +1,157 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import "./App.css";
-import Person from "./Components/Person";
+import CharComponent from "./Components/CharComponent";
+import ValidationComponent from "./Components/ValidationComponent";
+import Person from "./Person/Person";
 
-/* const App = () => {
-  const [initialState, setInitialState] = useState({
-    persons: [
-      { name: "Max", age: 28 },
-      { name: "Manu", age: 29 },
-      { name: "Stephanie", age: 26 },
-    ],
-  });
-  const [otherState, setOtherState] = useState("Some other value");
-  let switchNameHandler = () => {
-    setInitialState({
-      persons: [
-        { name: "Maxxx", age: 23 },
-        { name: "Mannnuuu", age: 32 },
-        { name: "Stephanieeee", age: 26 },
-      ],
-    });
-  };
-  return (
-    <div className="App">
-      <h1>Hi, I'm a React App</h1>
-      <p>This is really working</p>
-      <button onClick={switchNameHandler}>Switch Name</button>
-      <Person
-        age={initialState.persons[0].age}
-        name={initialState.persons[0].name}
-      />
-      <Person
-        age={initialState.persons[0].age}
-        name={initialState.persons[0].name}
-        click={this.switchNameHandler}
-      />
-      <Person
-        age={initialState.persons[0].age}
-        name={initialState.persons[0].name}
-      />
-    </div>
-  );
-}; */
-
-class App extends React.Component {
+class App extends Component {
   state = {
     persons: [
-      { name: "Max", age: 28 },
-      { name: "Manu", age: 29 },
-      { name: "Stephanie", age: 26 },
+      { id: "nanadsdafa", name: "Max", age: 28 },
+      { id: "rbnwobnwij12g", name: "Manu", age: 29 },
+      { id: "rohnj124hoj", name: "Stephanie", age: 26 },
     ],
-    otherState: "Some other value",
+    otherState: "some other value",
+    showPersons: false,
+    inputText: "",
+    inputTextLength: "",
   };
 
   switchNameHandler = (newName) => {
+    // console.log('Was clicked!');
+    // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
     this.setState({
       persons: [
-        { name: newName, age: 23 },
-        { name: "Mannnuuu", age: 32 },
-        { name: "Stephanieeee", age: 26 },
+        { id: "nanadsdafa", name: newName, age: 28 },
+        { id: "rbnwobnwij12g", name: "Manu", age: 29 },
+        { id: "rohnj124hoj", name: "Stephanie", age: 27 },
       ],
     });
   };
 
-  nameChangedHandler = (event) => {
+  nameChangedHandler = (event, id) => {
+    /*   const personIndex = this.state.persons.findIndex((p) => {
+      return p.id === id;
+    });
+    const person = { ...this.state.persons[personIndex] };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons }); */
+
+    const personIndex = this.state.persons.findIndex((p) => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex],
+    };
+    person.name = event.target.value;
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+    this.setState({ persons: persons });
+  };
+
+  deletePersonHandler = (personIndex) => {
+    const persons = this.state.persons;
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+  };
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow });
+  };
+
+  getLengthOfInput = (e) => {
+    const text = this.state.inputText;
     this.setState({
-      persons: [
-        { name: event.currentTarget.value, age: 23 },
-        { name: event.currentTarget.value, age: 32 },
-        { name: event.currentTarget.value, age: 26 },
-      ],
+      inputText: e.target.value,
+    });
+
+    const inputTextLength = text.length;
+    this.setState({
+      inputTextLength: inputTextLength + 1,
     });
   };
+
+  removeCharHandler = (index) => {
+    /*  const char = this.state.inputText.split("").find((_, i) => {
+      return i === index;
+    });*/
+    const text = this.state.inputText.split("");
+
+    text.splice(index, 1);
+    this.setState({ inputText: text.join("") });
+  };
   render() {
+    const style = {
+      backgroundColor: "white",
+      font: "inherit",
+      border: "1px solid blue",
+      padding: "8px",
+      cursor: "pointer",
+    };
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => (
+            <Person
+              key={person.id}
+              name={person.name}
+              age={person.age}
+              click={() => this.deletePersonHandler(index)}
+              changed={(e) => this.nameChangedHandler(e, person.id)}
+            />
+          ))}
+          {/*       <Person
+            name={this.state.persons[0].name}
+            age={this.state.persons[0].age}
+          />
+          <Person
+            name={this.state.persons[1].name}
+            age={this.state.persons[1].age}
+            click={this.switchNameHandler.bind(this, "Max!")}
+            changed={this.nameChangedHandler}
+          >
+            My Hobbies: Racing
+          </Person>
+          <Person
+            name={this.state.persons[2].name}
+            age={this.state.persons[2].age}
+          /> */}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
-        <p>This is really working</p>
-        <button onClick={this.switchNameHandler.bind(this, "Maximilian")}>
-          Switch Name
+        <p>This is really working!</p>
+        <button style={style} onClick={this.togglePersonsHandler}>
+          Toggle Persons
         </button>
-        <Person
-          age={this.state.persons[0].age}
-          name={this.state.persons[0].name}
-        />
-        <Person
-          age={this.state.persons[1].age}
-          name={this.state.persons[1].name}
-          click={this.switchNameHandler.bind(this, "maxx")}
-          changed={this.nameChangedHandler}
-        />
-        <Person
-          age={this.state.persons[2].age}
-          name={this.state.persons[2].name}
-        />
+        <input onChange={(e) => this.getLengthOfInput(e)} />
+        <ValidationComponent textLength={this.state.inputTextLength} />
+        {this.state.inputText.split("").map((t, index) => {
+          return (
+            <CharComponent
+              letter={t}
+              key={index}
+              removeChar={() => this.removeCharHandler(index)}
+            />
+          );
+        })}
+
+        {persons}
       </div>
     );
+    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
