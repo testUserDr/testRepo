@@ -1,18 +1,20 @@
 import React from "react";
-import Logo from "../../UI/Logo/Logo";
+
 import "./Toolbar.css";
+import Logo from "../../Logo/Logo";
 import NavigationItems from "../NavigationItems/NavigationItems";
-import HamburgerMenu from "../../UI/HamburgerMenu/HamburgerMenu";
-const Toolbar = (props) => (
+import DrawerToggle from "../SideDrawer/DrawerToggle/DrawerToggle";
+
+const toolbar = (props) => (
   <header className="Toolbar">
-    <HamburgerMenu clicked={props.clicked} />
+    <DrawerToggle clicked={props.drawerToggleClicked} />
     <div className="Logo">
       <Logo />
     </div>
-    <nav>
+    <nav className="DesktopOnly">
       <NavigationItems />
     </nav>
   </header>
 );
 
-export default Toolbar;
+export default toolbar;
